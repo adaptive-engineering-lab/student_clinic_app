@@ -1,0 +1,19 @@
+node_modules
+dist
+dev-dist
+coverage
+supabase/.temp
+playwright-report
+test-results
+.playwright-mcp
+package-lock.json
+
+# Spec Kit-managed content — not app source, formatted by its own tooling
+.specify
+specs
+*.md
+CLAUDE.md
+
+# Pre-existing / tool-generated config, not authored to our style guide
+.mcp.json
+tsconfig*.json
