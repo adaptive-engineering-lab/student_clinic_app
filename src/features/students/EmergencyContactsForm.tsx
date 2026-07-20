@@ -96,7 +96,11 @@ export function EmergencyContactsForm({ studentId, onContactsChange }: Emergency
       </ul>
 
       <form onSubmit={handleSubmit} className="space-y-2">
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && (
+          <p role="alert" className="text-sm text-red-600">
+            {error}
+          </p>
+        )}
         <label className="block">
           <span className="text-sm text-gray-700">Name</span>
           <input

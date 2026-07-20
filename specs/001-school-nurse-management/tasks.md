@@ -282,16 +282,16 @@ notification contains no student identifiers.
 
 ### Tests for User Story 6
 
-- [ ] T079 [P] [US6] Integration test: 5th matching visit in rolling window creates an outbreak_alerts row, 4th does not (FR-021) in tests/integration/outbreak-threshold.test.ts
-- [ ] T080 [P] [US6] Integration test: outbreak notification payload contains no student identifiers in tests/integration/outbreak-notification-privacy.test.ts
+- [X] T079 [P] [US6] Integration test: 5th matching visit in rolling window creates an outbreak_alerts row, 4th does not (FR-021) in tests/integration/outbreak-threshold.test.ts
+- [X] T080 [P] [US6] Integration test: outbreak notification payload contains no student identifiers in tests/integration/outbreak-notification-privacy.test.ts
 
 ### Implementation for User Story 6
 
-- [ ] T081 [P] [US6] Create OutbreakAlert/OutbreakAlertConfig TS types in src/types/outbreak.ts
-- [ ] T082 [US6] Implement outbreak-count Postgres function + `AFTER INSERT` trigger on `visits` (research.md §7) in supabase/migrations/0019_outbreak_trigger.sql
-- [ ] T083 [US6] Implement in-app outbreak alert banner for nurses (FR-021) in src/features/alerts/OutbreakAlertBanner.tsx
-- [ ] T084 [US6] Implement outbreak-alert-notify Edge Function invocation to email admins (FR-021) in supabase/functions/outbreak-alert-notify/index.ts
-- [ ] T085 [US6] Implement super_admin threshold/window configuration UI (FR-022) in src/features/reports/OutbreakConfigForm.tsx
+- [X] T081 [P] [US6] Create OutbreakAlert/OutbreakAlertConfig TS types in src/types/outbreak.ts
+- [X] T082 [US6] Implement outbreak-count Postgres function + `AFTER INSERT` trigger on `visits` (research.md §7) in supabase/migrations/0019_outbreak_trigger.sql
+- [X] T083 [US6] Implement in-app outbreak alert banner for nurses (FR-021) in src/features/alerts/OutbreakAlertBanner.tsx
+- [X] T084 [US6] Implement outbreak-alert-notify Edge Function invocation to email admins (FR-021) in supabase/functions/outbreak-alert-notify/index.ts
+- [X] T085 [US6] Implement super_admin threshold/window configuration UI (FR-022) in src/features/reports/OutbreakConfigForm.tsx
 
 **Checkpoint**: All six user stories are independently functional.
 
@@ -299,11 +299,11 @@ notification contains no student identifiers.
 
 ## Phase 9: Polish & Cross-Cutting Concerns
 
-- [ ] T086 [P] Configure GitHub Actions CI (lint, typecheck, unit + integration tests) in .github/workflows/ci.yml
-- [ ] T087 [P] Configure Vercel deployment settings in vercel.json
-- [ ] T088 Run the full quickstart.md validation end-to-end (all 7 scenarios, including offline)
-- [ ] T089 [P] Accessibility pass on AlertBanner and all forms (ARIA roles, keyboard navigation)
-- [ ] T090 Security review confirming deployed RLS policies match contracts/rls-policies.md exactly
+- [X] T086 [P] Configure GitHub Actions CI (lint, typecheck, unit + integration tests) in .github/workflows/ci.yml
+- [X] T087 [P] Configure Vercel deployment settings in vercel.json
+- [X] T088 Run the full quickstart.md validation end-to-end (all 7 scenarios, including offline)
+- [X] T089 [P] Accessibility pass on AlertBanner and all forms (ARIA roles, keyboard navigation)
+- [X] T090 Security review confirming deployed RLS policies match contracts/rls-policies.md exactly
 
 ---
 

@@ -51,8 +51,16 @@ export function CommunicationLogForm({ studentId }: CommunicationLogFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-3 rounded border p-4">
       <h3 className="font-semibold">Log parent/guardian contact</h3>
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      {justSaved && <p className="text-sm text-green-700">Contact logged.</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
+      {justSaved && (
+        <p role="status" className="text-sm text-green-700">
+          Contact logged.
+        </p>
+      )}
 
       <label className="block">
         <span className="text-sm text-gray-700">Contact name</span>

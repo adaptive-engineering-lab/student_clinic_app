@@ -15,11 +15,15 @@ dev-dist/
 coverage/
 playwright-report/
 test-results/
+blob-report/
 .playwright-mcp/
 
 # Supabase local dev
 supabase/.temp/
 supabase/.branches/
+
+# Vercel CLI local project linkage
+.vercel
 
 # Editor/OS
 .DS_Store

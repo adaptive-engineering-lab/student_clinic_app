@@ -36,8 +36,16 @@ export function SendHomeNotice({ visitId, onGenerated }: SendHomeNoticeProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-2 rounded border p-3">
       <h4 className="text-sm font-semibold">Generate send-home notice</h4>
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      {status && <p className="text-sm text-green-700">{status}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
+      {status && (
+        <p role="status" className="text-sm text-green-700">
+          {status}
+        </p>
+      )}
 
       <div className="flex items-center gap-4">
         <label className="flex items-center gap-2 text-sm">

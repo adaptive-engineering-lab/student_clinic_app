@@ -7,7 +7,12 @@ export function ReportHistory() {
   const { reports, loading, error, getSignedUrl } = useReportHistory()
 
   if (loading) return <p className="text-sm text-gray-500">Loading report history…</p>
-  if (error) return <p className="text-sm text-red-600">Failed to load report history: {error}</p>
+  if (error)
+    return (
+      <p role="alert" className="text-sm text-red-600">
+        Failed to load report history: {error}
+      </p>
+    )
 
   return (
     <div className="rounded border p-3" data-testid="report-history">

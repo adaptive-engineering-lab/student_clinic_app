@@ -10,7 +10,12 @@ export function VisitFrequencyReport({ filters }: VisitFrequencyReportProps) {
   const { rows, loading, error } = useVisitFrequencyReport(filters)
 
   if (loading) return <p className="text-sm text-gray-500">Loading report…</p>
-  if (error) return <p className="text-sm text-red-600">Failed to load report: {error}</p>
+  if (error)
+    return (
+      <p role="alert" className="text-sm text-red-600">
+        Failed to load report: {error}
+      </p>
+    )
 
   const byComplaint = new Map<string, number>()
   const byDate = new Map<string, number>()

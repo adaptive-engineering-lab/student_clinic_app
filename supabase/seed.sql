@@ -83,6 +83,48 @@ insert into public.user_roles (user_id, role)
 values ('00000000-0000-0000-0000-000000000002', 'admin')
 on conflict (user_id) do nothing;
 
+-- super_admin test account (US6's outbreak-alert resolve/config RLS policies are
+-- super_admin-only — needs a real login to prove the boundary through an actual
+-- client session, same rationale as the admin account above).
+insert into auth.users (
+  instance_id, id, aud, role, email, encrypted_password,
+  email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+  confirmation_token, recovery_token, email_change_token_new, email_change,
+  email_change_token_current, phone_change, phone_change_token, reauthentication_token
+) values (
+  '00000000-0000-0000-0000-000000000000',
+  '00000000-0000-0000-0000-000000000003',
+  'authenticated',
+  'authenticated',
+  'super_admin@test.local',
+  crypt('test-password-123', gen_salt('bf')),
+  now(),
+  '{"provider":"email","providers":["email"]}',
+  '{}',
+  now(),
+  now(),
+  '', '', '', '', '', '', '', ''
+)
+on conflict (id) do nothing;
+
+insert into auth.identities (
+  id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
+) values (
+  '00000000-0000-0000-0000-000000000003',
+  '00000000-0000-0000-0000-000000000003',
+  '00000000-0000-0000-0000-000000000003',
+  '{"sub":"00000000-0000-0000-0000-000000000003","email":"super_admin@test.local"}',
+  'email',
+  now(),
+  now(),
+  now()
+)
+on conflict (provider_id, provider) do nothing;
+
+insert into public.user_roles (user_id, role)
+values ('00000000-0000-0000-0000-000000000003', 'super_admin')
+on conflict (user_id) do nothing;
+
 -- Vault secrets the outbreak-alert trigger (0025_outbreak_trigger.sql) needs to call
 -- outbreak-alert-notify via pg_net. Local dev only — the "service role key" here is
 -- the fixed demo JWT the Supabase CLI prints for every local project (signed with the

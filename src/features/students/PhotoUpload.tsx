@@ -70,7 +70,11 @@ export function PhotoUpload({ studentId, photoUrl, onUploaded }: PhotoUploadProp
       {previewUrl && (
         <img src={previewUrl} alt="Student" className="h-32 w-32 rounded object-cover" />
       )}
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
       <input
         type="file"
         accept="image/*"

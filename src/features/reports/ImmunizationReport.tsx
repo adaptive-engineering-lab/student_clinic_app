@@ -10,7 +10,12 @@ export function ImmunizationReport({ filters }: ImmunizationReportProps) {
   const { rows, loading, error } = useImmunizationReport(filters)
 
   if (loading) return <p className="text-sm text-gray-500">Loading immunization report…</p>
-  if (error) return <p className="text-sm text-red-600">Failed to load report: {error}</p>
+  if (error)
+    return (
+      <p role="alert" className="text-sm text-red-600">
+        Failed to load report: {error}
+      </p>
+    )
 
   const overdueCount = rows.filter((r) => r.overdue).length
 

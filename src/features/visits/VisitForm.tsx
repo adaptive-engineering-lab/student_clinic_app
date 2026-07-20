@@ -135,7 +135,11 @@ export function VisitForm({ studentId, onSaved }: VisitFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 rounded border p-4">
       <h3 className="font-semibold">New visit</h3>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
 
       <ChiefComplaintField
         complaint={complaint}

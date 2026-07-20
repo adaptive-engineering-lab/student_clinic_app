@@ -56,7 +56,9 @@ export function StudentProfilePage() {
           <>
             <AlertBanner alerts={alerts} />
             {alertsError && (
-              <p className="text-sm text-red-600">Failed to load alerts: {alertsError}</p>
+              <p role="alert" className="text-sm text-red-600">
+                Failed to load alerts: {alertsError}
+              </p>
             )}
 
             <Link

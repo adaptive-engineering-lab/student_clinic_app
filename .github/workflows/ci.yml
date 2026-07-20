@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint-typecheck-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npm run format:check
+
+      - name: Typecheck and build
+        run: npm run build
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      # Applies all migrations and supabase/seed.sql to a fresh local Postgres/Auth
+      # stack so the integration suite (RLS policies, triggers, append-only grants)
+      # runs against the real schema, not a mock — same requirement the tests
+      # themselves document (Constitution Development Workflow gate).
+      - run: supabase start
+
+      - run: npm run test:unit
+
+      - run: npm run test:integration
+
+      - if: always()
+        run: supabase stop

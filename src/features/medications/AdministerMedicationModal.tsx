@@ -39,7 +39,12 @@ export function AdministerMedicationModal({
   }
 
   if (loading) return <p className="text-sm text-gray-500">Loading medications…</p>
-  if (error) return <p className="text-sm text-red-600">Failed to load medications: {error}</p>
+  if (error)
+    return (
+      <p role="alert" className="text-sm text-red-600">
+        Failed to load medications: {error}
+      </p>
+    )
   if (eligible.length === 0) {
     return (
       <p className="text-sm text-gray-500">

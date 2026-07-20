@@ -61,7 +61,11 @@ export function MedicalAlertForm({ studentId, onSaved }: MedicalAlertFormProps) 
   return (
     <form onSubmit={handleSubmit} className="space-y-3 rounded border p-4">
       <h3 className="font-semibold">Add allergy / condition</h3>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
 
       <label className="block">
         <span className="text-sm text-gray-700">Type</span>

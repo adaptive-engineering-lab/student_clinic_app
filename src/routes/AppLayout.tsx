@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useSession } from '../lib/auth/useSession'
+import { SyncStatusBanner } from '../components/SyncStatusBanner'
 
 export function AppLayout() {
   const { session, role } = useSession()
@@ -24,6 +25,7 @@ export function AppLayout() {
           </div>
         )}
       </header>
+      {session && <SyncStatusBanner />}
       <main className="p-6">
         <Outlet />
       </main>

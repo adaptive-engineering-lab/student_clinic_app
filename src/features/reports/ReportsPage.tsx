@@ -5,6 +5,7 @@ import { VisitFrequencyReport } from './VisitFrequencyReport'
 import { ImmunizationReport } from './ImmunizationReport'
 import { AdminAggregateReport } from './AdminAggregateReport'
 import { ReportHistory } from './ReportHistory'
+import { OutbreakConfigForm } from './OutbreakConfigForm'
 import { useGenerateReport } from './useGenerateReport'
 import { sendReportEmail } from './sendReportEmail'
 import { exportVisitFrequencyCsv } from './exportCsv'
@@ -50,6 +51,8 @@ export function ReportsPage() {
 
       <ReportGenerateActions filters={filters} audience={isNurse ? 'nurse' : 'admin'} />
       <ReportHistory />
+
+      {role === 'super_admin' && <OutbreakConfigForm />}
     </div>
   )
 }
@@ -81,7 +84,11 @@ function ReportGenerateActions({
 
   return (
     <div className="space-y-2 rounded border p-3">
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
       <button
         type="button"
         disabled={generating}
@@ -124,7 +131,11 @@ function ReportGenerateActions({
           >
             Email PDF
           </button>
-          {emailStatus && <span className="text-sm text-gray-700">{emailStatus}</span>}
+          {emailStatus && (
+            <span role="status" className="text-sm text-gray-700">
+              {emailStatus}
+            </span>
+          )}
         </div>
       )}
     </div>

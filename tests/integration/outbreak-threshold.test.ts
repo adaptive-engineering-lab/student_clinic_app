@@ -3,19 +3,17 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { execSync } from 'node:child_process'
 
 /**
- * Runs against the real local Supabase stack — proves admin_visit_summary's small-N
- * suppression (research.md §2, Constitution Principle I) actually holds: a group under
- * 5 distinct students must not appear at all, not just be capped/anonymized.
+ * Runs against the real local Supabase stack — verifies visits_outbreak_check
+ * (supabase/migrations/0025_outbreak_trigger.sql) fires exactly at the configured
+ * threshold (FR-021, research.md §7): a 5th distinct student with a matching
+ * complaint in the rolling window creates an outbreak_alerts row, a 4th does not.
+ * Requires supabase/seed.sql's nurse@test.local account and the default
+ * outbreak_alert_config singleton (threshold 5, window_hours 72).
  */
 const SUPABASE_URL = 'http://127.0.0.1:54321'
 const ANON_KEY = 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH'
 const NURSE_ID = '00000000-0000-0000-0000-000000000001'
-const GRADE = `SUPPRESS-${Date.now()}`
-// Unique per run — 5 distinct students with the same complaint also trips the
-// outbreak-alert trigger (0025_outbreak_trigger.sql); a fixed value like 'fever'
-// would leave a permanent, never-resolved outbreak_alerts row behind after every
-// test run, polluting the nurse-facing outbreak banner (research.md §7).
-const COMPLAINT = `suppress-test-${Date.now()}`
+const COMPLAINT = `outbreak-test-${Date.now()}`
 
 let client: SupabaseClient
 const studentIds: string[] = []
@@ -33,7 +31,7 @@ function insertStudentWithVisit() {
   studentIds.push(studentId)
   visitIds.push(visitId)
   psql(
-    `insert into public.students (id, first_name, last_name, date_of_birth, student_id_ext, grade) values ('${studentId}', 'Suppress', 'Test', '2015-01-01', 'SP-${studentId.slice(0, 8)}', '${GRADE}')`,
+    `insert into public.students (id, first_name, last_name, date_of_birth, student_id_ext) values ('${studentId}', 'Outbreak', 'Test', '2015-01-01', 'OB-${studentId.slice(0, 8)}')`,
   )
   psql(
     `insert into public.visits (id, student_id, nurse_id, chief_complaint, disposition) values ('${visitId}', '${studentId}', '${NURSE_ID}', '${COMPLAINT}', 'returned_to_class')`,
@@ -43,13 +41,10 @@ function insertStudentWithVisit() {
 beforeAll(async () => {
   client = createClient(SUPABASE_URL, ANON_KEY)
   const { error: signInError } = await client.auth.signInWithPassword({
-    email: 'admin@test.local',
+    email: 'nurse@test.local',
     password: 'test-password-123',
   })
   if (signInError) throw signInError
-
-  // 4 distinct students — below the suppression threshold.
-  for (let i = 0; i < 4; i++) insertStudentWithVisit()
 })
 
 afterAll(() => {
@@ -58,27 +53,30 @@ afterAll(() => {
   for (const id of studentIds) psql(`delete from public.students where id = '${id}'`)
 })
 
-describe('admin_visit_summary small-N suppression (research.md §2)', () => {
-  it('suppresses a group with only 4 distinct students', async () => {
+describe('outbreak-alert threshold (FR-021, research.md §7)', () => {
+  it('does not raise an alert for a 4th distinct student', async () => {
+    for (let i = 0; i < 4; i++) insertStudentWithVisit()
+
     const { data, error } = await client
-      .from('admin_visit_summary')
+      .from('outbreak_alerts')
       .select('*')
-      .eq('grade', GRADE)
-      .eq('chief_complaint', COMPLAINT)
+      .eq('complaint_type', COMPLAINT)
     expect(error).toBeNull()
     expect(data).toEqual([])
   })
 
-  it('shows the group once a 5th distinct student pushes it to the threshold', async () => {
+  it('raises an alert once a 5th distinct student matches within the window', async () => {
     insertStudentWithVisit()
 
     const { data, error } = await client
-      .from('admin_visit_summary')
+      .from('outbreak_alerts')
       .select('*')
-      .eq('grade', GRADE)
-      .eq('chief_complaint', COMPLAINT)
+      .eq('complaint_type', COMPLAINT)
     expect(error).toBeNull()
     expect(data).toHaveLength(1)
-    expect(data?.[0].distinct_student_count).toBe(5)
+    expect(data?.[0].visit_count).toBe(5)
+    expect(data?.[0].threshold_used).toBe(5)
+    expect(data?.[0].window_hours).toBe(72)
+    expect(data?.[0].resolved).toBe(false)
   })
 })

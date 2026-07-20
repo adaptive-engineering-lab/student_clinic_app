@@ -67,7 +67,11 @@ export function MedicationsList({ studentId }: MedicationsListProps) {
   return (
     <div className="space-y-3 rounded border p-4">
       <h3 className="font-semibold">Medications on file</h3>
-      {loadError && <p className="text-sm text-red-600">Failed to load medications: {loadError}</p>}
+      {loadError && (
+        <p role="alert" className="text-sm text-red-600">
+          Failed to load medications: {loadError}
+        </p>
+      )}
 
       {!loading && (
         <ul className="space-y-1 text-sm">
@@ -90,7 +94,11 @@ export function MedicationsList({ studentId }: MedicationsListProps) {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-2">
-        {submitError && <p className="text-sm text-red-600">{submitError}</p>}
+        {submitError && (
+          <p role="alert" className="text-sm text-red-600">
+            {submitError}
+          </p>
+        )}
         <label className="block">
           <span className="text-sm text-gray-700">Medication name</span>
           <input
