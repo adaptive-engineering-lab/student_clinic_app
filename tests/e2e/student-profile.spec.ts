@@ -16,7 +16,9 @@ test('create student, add severe allergy, confirm banner renders', async ({ page
   const uniqueId = `E2E-${Date.now()}`
   await page.getByRole('textbox', { name: 'First name' }).fill('Alex')
   await page.getByRole('textbox', { name: 'Last name' }).fill('Tester')
-  await page.getByRole('textbox', { name: 'Date of birth' }).fill('2015-06-01')
+  await page.getByRole('combobox', { name: 'Day' }).selectOption('1')
+  await page.getByRole('combobox', { name: 'Month' }).selectOption('6')
+  await page.getByRole('combobox', { name: 'Year' }).selectOption('2015')
   await page.getByRole('textbox', { name: 'Student ID (SIS)' }).fill(uniqueId)
   await page.getByRole('button', { name: 'Create student' }).click()
 

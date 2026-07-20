@@ -8,6 +8,45 @@ interface StudentProfileFormProps {
   onSaved: (student: Student) => void
 }
 
+const MONTH_NAMES = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+]
+
+const CURRENT_YEAR = new Date().getFullYear()
+// Typical K-12 age range; widen if a school needs older/younger students.
+const DOB_YEARS = Array.from({ length: 19 }, (_, i) => CURRENT_YEAR - 3 - i)
+
+function parseDateOfBirth(value: string | undefined): {
+  day: number | ''
+  month: number | ''
+  year: number | ''
+} {
+  if (!value) return { day: '', month: '', year: '' }
+  const [year, month, day] = value.split('-').map(Number)
+  return { day, month, year }
+}
+
+/** Returns a zero-padded 'YYYY-MM-DD', or null if day/month/year isn't a real date. */
+function buildDateOfBirth(day: number | '', month: number | '', year: number | ''): string | null {
+  if (day === '' || month === '' || year === '') return null
+  const date = new Date(year, month - 1, day)
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+    return null
+  }
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+}
+
 /**
  * Demographics create/edit (F-1.1). first_name, last_name, date_of_birth, and
  * student_id_ext are required at creation (FR-001).
@@ -15,7 +54,10 @@ interface StudentProfileFormProps {
 export function StudentProfileForm({ student, onSaved }: StudentProfileFormProps) {
   const [firstName, setFirstName] = useState(student?.first_name ?? '')
   const [lastName, setLastName] = useState(student?.last_name ?? '')
-  const [dateOfBirth, setDateOfBirth] = useState(student?.date_of_birth ?? '')
+  const initialDob = parseDateOfBirth(student?.date_of_birth)
+  const [dobDay, setDobDay] = useState<number | ''>(initialDob.day)
+  const [dobMonth, setDobMonth] = useState<number | ''>(initialDob.month)
+  const [dobYear, setDobYear] = useState<number | ''>(initialDob.year)
   const [studentIdExt, setStudentIdExt] = useState(student?.student_id_ext ?? '')
   const [gender, setGender] = useState(student?.gender ?? '')
   const [grade, setGrade] = useState(student?.grade ?? '')
@@ -25,8 +67,15 @@ export function StudentProfileForm({ student, onSaved }: StudentProfileFormProps
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
-    setSubmitting(true)
     setError(null)
+
+    const dateOfBirth = buildDateOfBirth(dobDay, dobMonth, dobYear)
+    if (!dateOfBirth) {
+      setError('Enter a valid date of birth (day, month, and year).')
+      return
+    }
+
+    setSubmitting(true)
 
     const payload: NewStudent = {
       first_name: firstName,
@@ -81,16 +130,59 @@ export function StudentProfileForm({ student, onSaved }: StudentProfileFormProps
         </label>
       </div>
 
-      <label className="block">
+      <div>
         <span className="text-sm text-gray-700">Date of birth</span>
-        <input
-          type="date"
-          required
-          value={dateOfBirth}
-          onChange={(e) => setDateOfBirth(e.target.value)}
-          className="mt-1 w-full rounded border px-3 py-2"
-        />
-      </label>
+        <div className="mt-1 grid grid-cols-3 gap-3">
+          <label className="block">
+            <span className="sr-only">Day</span>
+            <select
+              required
+              value={dobDay}
+              onChange={(e) => setDobDay(e.target.value ? Number(e.target.value) : '')}
+              className="w-full rounded border px-3 py-2"
+            >
+              <option value="">Day</option>
+              {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+                <option key={day} value={day}>
+                  {day}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block">
+            <span className="sr-only">Month</span>
+            <select
+              required
+              value={dobMonth}
+              onChange={(e) => setDobMonth(e.target.value ? Number(e.target.value) : '')}
+              className="w-full rounded border px-3 py-2"
+            >
+              <option value="">Month</option>
+              {MONTH_NAMES.map((name, i) => (
+                <option key={name} value={i + 1}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block">
+            <span className="sr-only">Year</span>
+            <select
+              required
+              value={dobYear}
+              onChange={(e) => setDobYear(e.target.value ? Number(e.target.value) : '')}
+              className="w-full rounded border px-3 py-2"
+            >
+              <option value="">Year</option>
+              {DOB_YEARS.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+      </div>
 
       <label className="block">
         <span className="text-sm text-gray-700">Student ID (SIS)</span>

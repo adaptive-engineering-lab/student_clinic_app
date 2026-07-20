@@ -19,7 +19,9 @@ test('sent-home visit generates a retrievable notice', async ({ page }) => {
   const lastName = `Notice${Date.now()}`
   await page.getByRole('textbox', { name: 'First name' }).fill('Send')
   await page.getByRole('textbox', { name: 'Last name' }).fill(lastName)
-  await page.getByRole('textbox', { name: 'Date of birth' }).fill('2016-03-01')
+  await page.getByRole('combobox', { name: 'Day' }).selectOption('1')
+  await page.getByRole('combobox', { name: 'Month' }).selectOption('3')
+  await page.getByRole('combobox', { name: 'Year' }).selectOption('2016')
   await page.getByRole('textbox', { name: 'Student ID (SIS)' }).fill(uniqueId)
   await page.getByRole('button', { name: 'Create student' }).click()
   await expect(page.getByRole('heading', { name: 'Edit student' })).toBeVisible()

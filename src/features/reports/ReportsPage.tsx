@@ -110,18 +110,18 @@ function ReportGenerateActions({
       )}
 
       {lastReportId && (
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <input
             type="email"
             placeholder="Email PDF to…"
             value={recipientEmail}
             onChange={(e) => setRecipientEmail(e.target.value)}
-            className="rounded border px-3 py-2 text-sm"
+            className="min-w-0 flex-1 rounded border px-3 py-2 text-sm"
           />
           <button
             type="button"
             disabled={emailing}
-            className="rounded border px-3 py-2 text-sm disabled:opacity-50"
+            className="min-h-11 rounded border px-3 py-2 text-sm disabled:opacity-50"
             onClick={async () => {
               setEmailing(true)
               const sent = await sendReportEmail(lastReportId, recipientEmail)

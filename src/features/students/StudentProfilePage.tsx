@@ -30,15 +30,15 @@ export function StudentProfilePage() {
   }
 
   return (
-    <div className="flex gap-6">
-      <div>
+    <div className="flex flex-col gap-6 sm:flex-row">
+      <div className="w-full sm:w-auto">
         <button
           type="button"
           onClick={() => {
             setSelected(null)
             setCreatingNew(true)
           }}
-          className="mb-3 w-full rounded border px-3 py-2 text-sm"
+          className="mb-3 min-h-11 w-full rounded border px-3 py-2 text-sm"
         >
           + New student
         </button>
@@ -63,12 +63,12 @@ export function StudentProfilePage() {
 
             <Link
               to={`/students/${selected.id}/visits/new`}
-              className="inline-block rounded bg-red-600 px-4 py-2 text-white"
+              className="flex min-h-11 w-fit items-center rounded bg-red-600 px-4 py-2 text-white"
             >
               Start visit
             </Link>
 
-            <div className="flex items-start gap-6">
+            <div className="flex flex-col items-start gap-6 sm:flex-row">
               <PhotoUpload
                 studentId={selected.id}
                 photoUrl={selected.photo_url}

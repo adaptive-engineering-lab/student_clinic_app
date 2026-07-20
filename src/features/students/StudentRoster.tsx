@@ -38,7 +38,7 @@ export function StudentRoster({ onSelect, selectedId, refreshKey }: StudentRoste
   }, [query, refreshKey])
 
   return (
-    <div className="w-72 shrink-0 space-y-3">
+    <div className="w-full space-y-3 sm:w-72 sm:shrink-0">
       <input
         type="search"
         placeholder="Search students…"
